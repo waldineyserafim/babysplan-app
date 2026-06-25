@@ -68,6 +68,11 @@ export function useAuth() {
     return supabase.auth.signOut()
   }
 
+  async function refreshProfile() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) await loadProfile(user.id)
+  }
+
   return {
     ...state,
     isAuthenticated: !!state.user,
@@ -78,5 +83,6 @@ export function useAuth() {
     signInWithGoogle,
     signUp,
     signOut,
+    refreshProfile,
   }
 }

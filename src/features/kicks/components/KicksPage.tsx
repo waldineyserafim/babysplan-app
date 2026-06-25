@@ -63,7 +63,7 @@ export function KicksPage() {
             onClick={() => tap.mutate(count + 1)}
             disabled={tap.isPending}
           >
-            TAP
+            REGISTRAR
           </button>
           <button
             className="btn btn-outline-secondary"

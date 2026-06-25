@@ -24,10 +24,14 @@ import {
   ShieldAlert,
   MoreHorizontal,
   X,
+  Settings,
+  UserPlus,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useUnreadCount } from '@/features/notifications/hooks/useNotifications'
 import { useInstallPrompt } from '@/shared/hooks/useInstallPrompt'
+import { useCurrentPregnancy } from '@/shared/hooks/useCurrentPregnancy'
+import { useRealtimeSync } from '@/shared/hooks/useRealtimeSync'
 
 // All navigation items
 const allNavItems = [
@@ -49,6 +53,7 @@ const allNavItems = [
   { to: ROUTES.INTERNATIONAL_MOVE,  icon: Globe,           label: 'Mudança',       group: 'prep' },
   { to: ROUTES.NOTIFICATIONS,       icon: Bell,            label: 'Notificações',  group: 'system' },
   { to: ROUTES.REPORTS,             icon: BarChart3,       label: 'Relatórios',    group: 'system' },
+  { to: ROUTES.SETTINGS,            icon: Settings,        label: 'Configurações', group: 'system' },
   { to: ROUTES.ADMIN,               icon: ShieldAlert,     label: 'Admin',         group: 'system' },
 ]
 
@@ -75,6 +80,8 @@ export function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { data: unreadCount = 0 } = useUnreadCount()
   const { canInstall, install } = useInstallPrompt()
+  const { data: pregnancy } = useCurrentPregnancy()
+  useRealtimeSync(pregnancy?.id)
 
   async function handleSignOut() {
     await signOut()
@@ -312,6 +319,17 @@ export function AppLayout() {
                 ))}
               </div>
             ))}
+
+            {/* Convidar parceiro(a) shortcut */}
+            <NavLink
+              to={ROUTES.SETTINGS}
+              className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 text-decoration-none mb-3 mt-1"
+              style={{ background: 'linear-gradient(135deg, #ede9fe, #fce7f3)', color: '#7c3aed' }}
+              onClick={() => setMenuOpen(false)}
+            >
+              <UserPlus size={20} />
+              <span className="fw-semibold" style={{ fontSize: '0.9rem' }}>Convidar parceiro(a)</span>
+            </NavLink>
 
             {/* PWA install in menu */}
             {canInstall && (

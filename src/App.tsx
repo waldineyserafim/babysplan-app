@@ -30,6 +30,8 @@ const TimelinePage = lazy(() => import('@/features/timeline/components/TimelineP
 const LayettePage = lazy(() => import('@/features/layette/components/LayettePage').then(m => ({ default: m.LayettePage })))
 const ReportsPage = lazy(() => import('@/features/reports/components/ReportsPage').then(m => ({ default: m.ReportsPage })))
 const AdminPage = lazy(() => import('@/features/admin/components/AdminPage').then(m => ({ default: m.AdminPage })))
+const SettingsPage = lazy(() => import('@/features/settings/components/SettingsPage').then(m => ({ default: m.SettingsPage })))
+const JoinPage = lazy(() => import('@/features/join/components/JoinPage').then(m => ({ default: m.JoinPage })))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -95,7 +97,11 @@ function AppRoutes() {
           <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
           <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
           <Route path={ROUTES.ADMIN} element={<AdminPage />} />
+          <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
         </Route>
+
+        {/* Join route: works standalone (handles own auth state in JoinPage) */}
+        <Route path="/join/:code" element={<JoinPage />} />
 
         <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
       </Routes>

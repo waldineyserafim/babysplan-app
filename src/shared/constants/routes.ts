@@ -51,4 +51,5 @@ export const ROUTES = {
   ADMIN_CONTENT: '/admin/content',
 
   SETTINGS: '/settings',
+  JOIN: '/join/:code',
 } as const
