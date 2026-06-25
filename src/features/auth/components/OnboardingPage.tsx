@@ -68,15 +68,15 @@ export function OnboardingPage() {
         return
       }
 
-      // Create tenant
-      const { data: tenant, error: tenantError } = await supabase
+      // UUID gerado no cliente: evita que o RETURNING do INSERT seja bloqueado
+      // pelo RLS (auth_tenant_id() ainda é NULL antes do profile ser atualizado).
+      const newTenantId = crypto.randomUUID()
+      const { error: tenantError } = await supabase
         .from('tenants')
-        .insert({ name: familyName })
-        .select()
-        .single()
+        .insert({ id: newTenantId, name: familyName })
       if (tenantError) { setError('Erro ao criar família.'); return }
 
-      tenantId = tenant.id
+      tenantId = newTenantId
       const displayName = profile?.full_name ?? user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? 'Usuário'
 
       const { error: profileError } = await supabase.from('profiles').upsert({
