@@ -1,20 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Baby's Plan">
   <rect width="64" height="64" rx="14" fill="#FAFAF8"/>
-  <g transform="translate(7.5, 4) scale(0.49)">
-    <!-- Left adult figure (teal) -->
-    <circle cx="27" cy="13" r="8" fill="#4FB6AC"/>
-    <path d="M27 21 C13 30 11 52 27 62 C34 67 42 70 48 73"
-          stroke="#4FB6AC" stroke-width="13" stroke-linecap="round" fill="none"/>
-    <!-- Right adult figure (coral) -->
-    <circle cx="73" cy="13" r="8" fill="#F28C82"/>
-    <path d="M73 21 C87 30 89 52 73 62 C66 67 58 70 52 73"
-          stroke="#F28C82" stroke-width="13" stroke-linecap="round" fill="none"/>
-    <!-- Child figure (teal) -->
-    <circle cx="50" cy="37" r="5.5" fill="#4FB6AC"/>
-    <path d="M50 43 C50 52 50 59 50 64"
-          stroke="#4FB6AC" stroke-width="9" stroke-linecap="round" fill="none"/>
-    <!-- Journey path (teal) -->
-    <path d="M10 85 C22 77 33 89 50 83 C67 77 78 89 90 83"
-          stroke="#4FB6AC" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <g transform="translate(7, 4) scale(0.119)">
+    <defs>
+      <linearGradient id="bp-jg-fav" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#4FB6AC" stop-opacity="1"/>
+        <stop offset="75%" stop-color="#4FB6AC" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#4FB6AC" stop-opacity="0.05"/>
+      </linearGradient>
+    </defs>
+    <!-- Left adult (teal) -->
+    <circle cx="148" cy="68" r="46" fill="#4FB6AC"/>
+    <path d="M 162 112 C 220 124 268 160 262 202 C 256 236 214 260 176 282 C 122 314 48 358 52 420 C 54 460 112 482 192 484"
+          stroke="#4FB6AC" stroke-width="60" stroke-linecap="round" fill="none"/>
+    <!-- Right adult (coral) -->
+    <circle cx="296" cy="90" r="38" fill="#F28C82"/>
+    <path d="M 268 126 C 244 154 254 196 278 220 C 306 250 364 296 364 364 C 364 420 326 466 250 484"
+          stroke="#F28C82" stroke-width="54" stroke-linecap="round" fill="none"/>
+    <!-- Child (teal) -->
+    <circle cx="222" cy="262" r="28" fill="#4FB6AC"/>
+    <path d="M 182 312 C 196 296 250 296 264 312"
+          stroke="#4FB6AC" stroke-width="21" stroke-linecap="round" fill="none"/>
+    <!-- Journey path -->
+    <path d="M 82 482 C 108 502 164 488 222 500 C 276 512 346 492 416 470"
+          stroke="url(#bp-jg-fav)" stroke-width="27" stroke-linecap="round" fill="none"/>
   </g>
 </svg>
