@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS public.layette_categories (
 
 -- Habilitar RLS (acesso público de leitura — catálogo global)
 ALTER TABLE public.layette_categories ENABLE ROW LEVEL SECURITY;
-CREATE POLICY IF NOT EXISTS "layette_categories_public_read" ON public.layette_categories
+DROP POLICY IF EXISTS "layette_categories_public_read" ON public.layette_categories;
+CREATE POLICY "layette_categories_public_read" ON public.layette_categories
   FOR SELECT USING (true);
 
 INSERT INTO public.layette_categories (slug, name, icon, color, sort_order) VALUES
