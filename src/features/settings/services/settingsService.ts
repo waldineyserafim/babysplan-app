@@ -80,6 +80,20 @@ export async function fetchTenantInfo(tenantId: string) {
   return data
 }
 
+export async function updatePregnancy(
+  pregnancyId: string,
+  fields: { baby_name?: string; baby_sex?: string; lmp_date?: string; due_date?: string }
+) {
+  const { data, error } = await supabase
+    .from('pregnancies')
+    .update({ ...fields, updated_at: new Date().toISOString() })
+    .eq('id', pregnancyId)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
 export async function updateProfile(userId: string, fields: { full_name?: string; nickname?: string; phone?: string }) {
   const { data, error } = await supabase
     .from('profiles')

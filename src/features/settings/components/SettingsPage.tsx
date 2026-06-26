@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { addDays, format } from 'date-fns'
 import { useAuth } from '@/shared/hooks/useAuth'
-import { Copy, Check, UserPlus, Users, Trash2, Settings } from 'lucide-react'
+import { useCurrentPregnancy } from '@/shared/hooks/useCurrentPregnancy'
+import { Copy, Check, UserPlus, Users, Trash2, Settings, Baby } from 'lucide-react'
 import {
   createInvitation,
   cancelInvitation,
@@ -9,18 +11,30 @@ import {
   fetchTenantPartners,
   fetchTenantInfo,
   updateProfile,
+  updatePregnancy,
 } from '../services/settingsService'
+
+const SEX_OPTIONS = [
+  { value: 'unknown' as const, emoji: '🔮', label: 'Surpresa' },
+  { value: 'male' as const, emoji: '👦', label: 'Menino' },
+  { value: 'female' as const, emoji: '👧', label: 'Menina' },
+]
 
 const APP_BASE = window.location.origin
 
 export function SettingsPage() {
   const { profile } = useAuth()
+  const { data: pregnancy } = useCurrentPregnancy()
   const qc = useQueryClient()
   const [copied, setCopied] = useState<string | null>(null)
   const [showInviteForm, setShowInviteForm] = useState(false)
   const [invitedName, setInvitedName] = useState('')
   const [editingName, setEditingName] = useState(false)
   const [newName, setNewName] = useState(profile?.full_name ?? '')
+  const [editingPregnancy, setEditingPregnancy] = useState(false)
+  const [pregBabyName, setPregBabyName] = useState('')
+  const [pregBabySex, setPregBabySex] = useState<'male' | 'female' | 'unknown'>('unknown')
+  const [pregLmpDate, setPregLmpDate] = useState('')
 
   const tenantId = profile?.tenant_id
 
@@ -63,6 +77,29 @@ export function SettingsPage() {
       setEditingName(false)
     },
   })
+
+  const savePregnancy = useMutation({
+    mutationFn: () => {
+      const due = format(addDays(new Date(pregLmpDate), 280), 'yyyy-MM-dd')
+      return updatePregnancy(pregnancy!.id, {
+        baby_name: pregBabyName,
+        baby_sex: pregBabySex,
+        lmp_date: pregLmpDate,
+        due_date: due,
+      })
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['current-pregnancy'] })
+      setEditingPregnancy(false)
+    },
+  })
+
+  function openPregEdit() {
+    setPregBabyName(pregnancy?.baby_name ?? '')
+    setPregBabySex((pregnancy?.baby_sex as 'male' | 'female' | 'unknown') ?? 'unknown')
+    setPregLmpDate(pregnancy?.lmp_date ?? '')
+    setEditingPregnancy(true)
+  }
 
   async function copyInviteLink(code: string) {
     const url = `${APP_BASE}/join/${code}`
@@ -244,6 +281,123 @@ export function SettingsPage() {
               <span>{inv.invited_name ?? 'Convite'} — aceito em {new Date(inv.updated_at ?? inv.created_at ?? '').toLocaleDateString('pt-BR')}</span>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ── Dados da gestação ── */}
+      {pregnancy && (
+        <div className="card border-0 shadow-sm p-4 mb-4">
+          <div className="d-flex align-items-center gap-2 mb-3">
+            <Baby size={16} style={{ color: '#0D9488' }} />
+            <h6 className="fw-bold mb-0">Dados da Gestação</h6>
+            {!editingPregnancy && (
+              <button className="btn btn-sm btn-light ms-auto" onClick={openPregEdit}>
+                Editar
+              </button>
+            )}
+          </div>
+
+          {editingPregnancy ? (
+            <div>
+              {savePregnancy.isError && (
+                <div className="alert alert-danger py-2 small mb-3">Erro ao salvar. Tente novamente.</div>
+              )}
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold small">Nome carinhoso do bebê</label>
+                <input
+                  className="form-control form-control-sm"
+                  value={pregBabyName}
+                  onChange={e => setPregBabyName(e.target.value)}
+                  placeholder="Ex: Bebê, Aurora, Miguelzinho..."
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold small">Sexo do bebê</label>
+                <div className="d-flex gap-2">
+                  {SEX_OPTIONS.map(opt => {
+                    const selected = pregBabySex === opt.value
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setPregBabySex(opt.value)}
+                        className="flex-fill border-0 rounded-3 py-2 px-2 d-flex flex-column align-items-center"
+                        style={{
+                          cursor: 'pointer',
+                          outline: selected ? '2px solid #0D9488' : '2px solid #e2e8f0',
+                          background: selected ? '#f0fdfa' : '#f8fafc',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>{opt.emoji}</span>
+                        <span className="small fw-semibold mt-1" style={{ color: selected ? '#0D9488' : '#64748b' }}>
+                          {opt.label}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold small">Data da última menstruação (DUM)</label>
+                <input
+                  type="date"
+                  className="form-control form-control-sm"
+                  value={pregLmpDate}
+                  onChange={e => setPregLmpDate(e.target.value)}
+                  max={new Date().toISOString().split('T')[0]}
+                />
+                {pregLmpDate && (
+                  <div className="mt-2 p-2 rounded-3 text-center small"
+                    style={{ background: '#f0fdfa', color: '#0D9488' }}>
+                    🍼 Data provável do parto:{' '}
+                    <strong>{format(addDays(new Date(pregLmpDate), 280), 'dd/MM/yyyy')}</strong>
+                  </div>
+                )}
+              </div>
+
+              <div className="d-flex gap-2">
+                <button
+                  className="btn btn-sm text-white"
+                  style={{ background: '#0D9488', borderRadius: 10 }}
+                  onClick={() => savePregnancy.mutate()}
+                  disabled={savePregnancy.isPending || !pregBabyName.trim() || !pregLmpDate}
+                >
+                  {savePregnancy.isPending ? <span className="spinner-border spinner-border-sm me-1" /> : null}
+                  Salvar alterações
+                </button>
+                <button className="btn btn-sm btn-light" onClick={() => setEditingPregnancy(false)}>Cancelar</button>
+              </div>
+            </div>
+          ) : (
+            <div className="d-flex flex-column gap-2">
+              <div className="d-flex justify-content-between small">
+                <span className="text-muted">Nome do bebê</span>
+                <span className="fw-semibold">{pregnancy.baby_name ?? '—'}</span>
+              </div>
+              <div className="d-flex justify-content-between small">
+                <span className="text-muted">Sexo</span>
+                <span className="fw-semibold">
+                  {pregnancy.baby_sex === 'male' ? '👦 Menino' : pregnancy.baby_sex === 'female' ? '👧 Menina' : '🔮 Surpresa'}
+                </span>
+              </div>
+              <div className="d-flex justify-content-between small">
+                <span className="text-muted">DUM</span>
+                <span className="fw-semibold">
+                  {pregnancy.lmp_date ? new Date(pregnancy.lmp_date + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
+                </span>
+              </div>
+              <div className="d-flex justify-content-between small">
+                <span className="text-muted">Data provável do parto</span>
+                <span className="fw-semibold">
+                  {pregnancy.due_date ? new Date(pregnancy.due_date + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
