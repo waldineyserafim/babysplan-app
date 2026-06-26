@@ -1,27 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Baby's Plan">
-  <rect width="64" height="64" rx="14" fill="#FAFAF8"/>
-  <g transform="translate(7, 4) scale(0.119)">
-    <defs>
-      <linearGradient id="bp-jg-fav" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#4FB6AC" stop-opacity="1"/>
-        <stop offset="75%" stop-color="#4FB6AC" stop-opacity="0.3"/>
-        <stop offset="100%" stop-color="#4FB6AC" stop-opacity="0.05"/>
-      </linearGradient>
-    </defs>
-    <!-- Left adult (teal) -->
-    <circle cx="148" cy="68" r="46" fill="#4FB6AC"/>
-    <path d="M 162 112 C 220 124 268 160 262 202 C 256 236 214 260 176 282 C 122 314 48 358 52 420 C 54 460 112 482 192 484"
-          stroke="#4FB6AC" stroke-width="60" stroke-linecap="round" fill="none"/>
-    <!-- Right adult (coral) -->
-    <circle cx="296" cy="90" r="38" fill="#F28C82"/>
-    <path d="M 268 126 C 244 154 254 196 278 220 C 306 250 364 296 364 364 C 364 420 326 466 250 484"
-          stroke="#F28C82" stroke-width="54" stroke-linecap="round" fill="none"/>
-    <!-- Child (teal) -->
-    <circle cx="222" cy="262" r="28" fill="#4FB6AC"/>
-    <path d="M 182 312 C 196 296 250 296 264 312"
-          stroke="#4FB6AC" stroke-width="21" stroke-linecap="round" fill="none"/>
-    <!-- Journey path -->
-    <path d="M 82 482 C 108 502 164 488 222 500 C 276 512 346 492 416 470"
-          stroke="url(#bp-jg-fav)" stroke-width="27" stroke-linecap="round" fill="none"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Baby's Plan">
+  <image href="data:image/png;base64,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" width="32" height="32"/>
 </svg>
