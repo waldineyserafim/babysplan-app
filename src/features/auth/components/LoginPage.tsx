@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { supabase } from '@/infrastructure/supabase/client'
 import { ROUTES } from '@/shared/constants/routes'
@@ -20,7 +20,6 @@ type ForgotData = z.infer<typeof forgotSchema>
 
 export function LoginPage() {
   const { signInWithEmail, signInWithGoogle } = useAuth()
-  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [googleLoading, setGoogleLoading] = useState(false)
@@ -35,9 +34,8 @@ export function LoginPage() {
     const { error } = await signInWithEmail(data.email, data.password)
     if (error) {
       setError('Email ou senha incorretos. Tente novamente.')
-      return
     }
-    navigate(ROUTES.DASHBOARD)
+    // PublicRoute redirects to dashboard automatically when isAuthenticated becomes true
   }
 
   async function onForgot(data: ForgotData) {

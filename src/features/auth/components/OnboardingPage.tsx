@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -40,13 +40,14 @@ export function OnboardingPage() {
   const babySex = watch('babySex')
   const dueDate = lmpDate ? format(addDays(new Date(lmpDate), 280), 'dd/MM/yyyy') : null
 
-  // Already has a pregnancy — redirect to dashboard
-  if (!authLoading && !pregnancyLoading && existingPregnancy) {
-    navigate(ROUTES.DASHBOARD, { replace: true })
-    return null
-  }
+  // Redirect to dashboard if user already has an active pregnancy
+  useEffect(() => {
+    if (!authLoading && !pregnancyLoading && existingPregnancy) {
+      navigate(ROUTES.DASHBOARD, { replace: true })
+    }
+  }, [authLoading, pregnancyLoading, existingPregnancy, navigate])
 
-  if (authLoading || pregnancyLoading) {
+  if (authLoading || pregnancyLoading || existingPregnancy) {
     return (
       <div className="min-vh-100 d-flex align-items-center justify-content-center"
         style={{ background: 'linear-gradient(135deg, #f0fdfa, #fce7f3)' }}>

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthLayout } from '@/shared/components/Layout/AuthLayout'
 import { AppLayout } from '@/shared/components/Layout/AppLayout'
-import { useAuth } from '@/shared/hooks/useAuth'
+import { useAuth, AuthProvider } from '@/shared/hooks/useAuth'
 import { useCurrentPregnancy } from '@/shared/hooks/useCurrentPregnancy'
 import { ROUTES } from '@/shared/constants/routes'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -137,9 +137,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/">
-        <AppRoutes />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter basename="/">
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
