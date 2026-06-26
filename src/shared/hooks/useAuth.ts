@@ -28,21 +28,29 @@ export function useAuth() {
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setState(prev => ({ ...prev, session, user: session?.user ?? null }))
-      if (session?.user) loadProfile(session.user.id)
-      else setState(prev => ({ ...prev, profile: null, loading: false }))
+      if (session?.user) {
+        // Set loading: true so guards wait for profile before making routing decisions
+        setState(prev => ({ ...prev, session, user: session.user!, loading: true }))
+        loadProfile(session.user.id)
+      } else {
+        setState(prev => ({ ...prev, session: null, user: null, profile: null, loading: false }))
+      }
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
   async function loadProfile(userId: string) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    setState(prev => ({ ...prev, profile: data, loading: false }))
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      setState(prev => ({ ...prev, profile: data, loading: false }))
+    } catch {
+      setState(prev => ({ ...prev, profile: null, loading: false }))
+    }
   }
 
   async function signInWithEmail(email: string, password: string) {
